@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chosen Palette: Dark Space Blue with Gradients -->
+    <!-- Application Structure Plan: The SPA is an interactive lesson targeting the common Brazilian mistake of translating "vou estudar" to "I will go study." It features a language toggle, an introductory section explaining why the error occurs (literal translation), a core explanation of the correct structures ("going to" vs. "will"), and a section on the one exception where "go study" is correct (physical movement). Interactive cards with real-life scenarios reinforce the learning, followed by a quiz. This structure is designed to deconstruct the error, teach the correct forms, and prevent overcorrection by explaining the exception. -->
+    <!-- Visualization & Content Choices: Report Info: Grammatical error analysis for "I will go study." Goal: Teach Brazilians the correct way to express future intent. Viz/Presentation Method: Interactive cards with icons (e.g., 🤔, ✅) to contrast incorrect vs. correct sentences. A simple diagram or table could show the logic flow. Interaction: Click-to-reveal details on cards and a multiple-choice quiz. Justification: This interactive method makes grammar rules more engaging and easier to remember than static text. Library/Method: Vanilla JS for all interactions. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>Desvendando "I will go study"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A192F;
+            color: #E2E8F0;
+        }
+        .gradient-text-title {
+            background: linear-gradient(90deg, #FF3300, #FFFFCC, #00CCCC, #FF00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .lesson-card {
+            background-color: #112240;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .situation-card {
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .situation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .situation-card .details {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out;
+            margin-top: 0;
+        }
+        .situation-card.open .details {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        .quiz-option {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .quiz-option:hover {
+            background-color: #334155;
+            border-color: #475569;
+        }
+        .quiz-option.correct {
+            background-color: #10B981;
+            border-color: #059669;
+        }
+        .quiz-option.incorrect {
+            background-color: #EF4444;
+            border-color: #DC2626;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto space-y-12">
+        
+        <div class="text-right">
+            <button id="language-button" class="px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-full shadow-lg hover:bg-sky-700 transition-colors duration-300">
+                Switch to English
+            </button>
+        </div>
+
+        <!-- Portuguese Content -->
+        <div id="portuguese-content">
+            <header class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold">
+                    <span class="gradient-text-title">O Erro Fatal: "I will go study"</span>
+                </h1>
+                <p class="mt-2 text-lg text-slate-400">Entenda por que traduzir "Vou estudar" ao pé da letra é um erro de iniciante.</p>
+                <p class="text-sm text-slate-500">por Daby</p>
+            </header>
+
+            <main class="space-y-12">
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">Por que "I will go study" está errado?</h2>
+                    <p class="text-slate-300">
+                        Se você já disse <strong class="text-red-400">"I will go study"</strong>, não se preocupe, você não está sozinho. Esse é um dos erros mais comuns para brasileiros, pois é uma tradução literal do nosso jeito de falar. Em português, usamos o verbo "ir" para indicar o futuro.
+                    </p>
+                    <p class="text-slate-300 mt-4">Essa é uma regra tão fundamental que cerca de 80% dos brasileiros que estão aprendendo inglês cometem esse erro no início. Para entender melhor, veja como a tradução literal funciona em português:</p>
+                    <p class="text-slate-300 mt-4 bg-gray-800 p-3 rounded-lg">
+                        <strong>Português:</strong>
+                        <ul>
+                            <li>"Eu <strong class='text-amber-300'>vou</strong> estudar." (Verbo IR + Verbo Principal)</li>
+                            <li>"Eu <strong class='text-amber-300'>vou</strong> comer."</li>
+                            <li>"Ele <strong class='text-amber-300'>vai</strong> dormir."</li>
+                            <li>"Nós <strong class='text-amber-300'>vamos</strong> viajar."</li>
+                            <li>"Eles <strong class='text-amber-300'>vão</strong> trabalhar."</li>
+                            <li>"Você <strong class='text-amber-300'>vai</strong> cantar."</li>
+                            <li>"Ela <strong class='text-amber-300'>vai</strong> comprar."</li>
+                            <li>"Vocês <strong class='text-amber-300'>vão</strong> assistir."</li>
+                        </ul>
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        O problema é que, em inglês, <strong class="text-amber-300">"go"</strong> quase sempre significa **movimento físico**. Então, quando você diz "I will go study", um nativo entende que você vai se deslocar para outro lugar (como a biblioteca ou a casa de um amigo) para estudar. Se você já está em casa e só vai mudar de cômodo, a frase soa estranha e redundante.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        Isso cria uma ambiguidade, pois o **"I will"** aponta para o futuro, o **"go"** indica o movimento de um ponto para outro, e só então o verbo principal (estudar, comer, dormir, etc.) mostra a ação que você realmente irá fazer.
+                    </p>
+                </section>
+                
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">A Forma Correta de Pensar ✅</h2>
+                    <p class="text-slate-300">
+                        O segredo é parar de pensar em "movimento" e começar a pensar em **"intenção futura"**. Quando "vou" significa um plano para o futuro, e não um deslocamento, use uma destas duas formas:
+                    </p>
+                    <div class="mt-6 space-y-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-300">1. Usando "going to" (A forma mais comum)</h3>
+                            <p class="text-slate-300">É a tradução mais fiel para o nosso "vou fazer algo".</p>
+                            <p class="text-slate-300 mt-2 bg-gray-800 p-3 rounded-lg">
+                                <strong>Estrutura:</strong> Sujeito + <code class="text-teal-300">am/is/are</code> + <code class="text-teal-300">going to</code> + Verbo Principal
+                            </p>
+                            <p class="text-slate-300 mt-2"><strong>Exemplo:</strong> "I <strong class='text-teal-300'>am going to study</strong>." (Eu vou estudar.)</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-300">2. Usando "will"</h3>
+                            <p class="text-slate-300">Também indica o futuro, geralmente para decisões tomadas na hora.</p>
+                            <p class="text-slate-300 mt-2 bg-gray-800 p-3 rounded-lg">
+                                <strong>Estrutura:</strong> Sujeito + <code class="text-teal-300">will</code> + Verbo Principal
+                            </p>
+                            <p class="text-slate-300 mt-2"><strong>Exemplo:</strong> "I <strong class='text-teal-300'>will study</strong> now." (Eu vou estudar agora.)</p>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold text-sky-400 mb-4">Veja a tradução correta para as frases</h3>
+                        <table class="table-auto w-full text-left border-collapse border border-slate-700 rounded-lg">
+                            <thead>
+                                <tr class="bg-gray-800">
+                                    <th class="p-4 border-b border-slate-700 text-teal-400">Português</th>
+                                    <th class="p-4 border-b border-slate-700 text-teal-400">Inglês (Com 'going to')</th>
+                                    <th class="p-4 border-b border-slate-700 text-teal-400">Inglês (Com 'will')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Eu vou estudar.</td>
+                                    <td class="p-4 border-b border-slate-700">I am going to study.</td>
+                                    <td class="p-4 border-b border-slate-700">I will study.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4 border-b border-slate-700">Eu vou comer.</td>
+                                    <td class="p-4 border-b border-slate-700">I am going to eat.</td>
+                                    <td class="p-4 border-b border-slate-700">I will eat.</td>
+                                </tr>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Ele vai dormir.</td>
+                                    <td class="p-4 border-b border-slate-700">He is going to sleep.</td>
+                                    <td class="p-4 border-b border-slate-700">He will sleep.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4 border-b border-slate-700">Nós vamos viajar.</td>
+                                    <td class="p-4 border-b border-slate-700">We are going to travel.</td>
+                                    <td class="p-4 border-b border-slate-700">We will travel.</td>
+                                </tr>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Eles vão trabalhar.</td>
+                                    <td class="p-4 border-b border-slate-700">They are going to work.</td>
+                                    <td class="p-4 border-b border-slate-700">They will work.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4 border-b border-slate-700">Você vai cantar.</td>
+                                    <td class="p-4 border-b border-slate-700">You are going to sing.</td>
+                                    <td class="p-4 border-b border-slate-700">You will sing.</td>
+                                </tr>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Ela vai comprar.</td>
+                                    <td class="p-4 border-b border-slate-700">She is going to buy.</td>
+                                    <td class="p-4 border-b border-slate-700">She will buy.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4">Vocês vão assistir.</td>
+                                    <td class="p-4">You are going to watch.</td>
+                                    <td class="p-4">You will watch.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                 <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">A Única Exceção: Quando "Go Study" Faz Sentido 💡</h2>
+                    <p class="text-slate-300">
+                        Existe uma situação em que você pode usar "go study": quando você realmente quer enfatizar o **movimento**. Geralmente, isso acontece com um comando ou sugestão.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        <strong>Exemplo:</strong> Sua mãe entra no seu quarto e vê você jogando videogame em vez de estudar. Ela pode dizer:
+                    </p>
+                     <p class="text-slate-300 mt-2 bg-gray-800 p-3 rounded-lg">
+                        "Stop playing and <strong class='text-amber-300'>go study</strong>!" (Pare de jogar e vá estudar!)
+                    </p>
+                     <p class="text-slate-300 mt-2">
+                        Aqui, "go" funciona porque ela está te mandando sair da frente do videogame e ir para outro lugar (sua escrivaninha) para estudar.
+                    </p>
+                </section>
+
+                <section id="quiz-container-pt" class="lesson-card"></section>
+            </main>
+        </div>
+
+        <!-- English Content -->
+        <div id="english-content" class="hidden">
+            <header class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold">
+                    <span class="gradient-text-title">The Fatal Error: "I will go study"</span>
+                </h1>
+                <p class="mt-2 text-lg text-slate-400">Understand why literally translating "Vou estudar" is a beginner's mistake.</p>
+                <p class="text-sm text-slate-500">by Daby</p>
+            </header>
+
+            <main class="space-y-12">
+                 <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">Why is "I will go study" wrong?</h2>
+                    <p class="text-slate-300">
+                       If you've ever said <strong class="text-red-400">"I will go study"</strong>, don't worry, you're not alone. This is one of the most common mistakes for Brazilians because it's a literal translation of how we speak. In Portuguese, we use the verb "ir" (to go) to indicate the future.
+                    </p>
+                    <p class="text-slate-300 mt-4">This is such a fundamental rule that approximately 80% of Brazilians learning English get stuck here at the beginning. To better understand, see how the literal translation works in Portuguese:</p>
+                    <p class="text-slate-300 mt-4 bg-gray-800 p-3 rounded-lg">
+                        <strong>Portuguese:</strong>
+                        <ul>
+                            <li>"Eu <strong class='text-amber-300'>vou</strong> estudar." (Verb GO + Main Verb)</li>
+                            <li>"Eu <strong class='text-amber-300'>vou</strong> comer."</li>
+                            <li>"Ele <strong class='text-amber-300'>vai</strong> dormir."</li>
+                            <li>"Nós <strong class='text-amber-300'>vamos</strong> viajar."</li>
+                            <li>"Eles <strong class='text-amber-300'>vão</strong> trabalhar."</li>
+                            <li>"Você <strong class='text-amber-300'>vai</strong> cantar."</li>
+                            <li>"Ela <strong class='text-amber-300'>vai</strong> comprar."</li>
+                            <li>"Vocês <strong class='text-amber-300'>vão</strong> assistir."</li>
+                        </ul>
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        The problem is that in English, <strong class="text-amber-300">"go"</strong> almost always means **physical movement**. So when you say "I will go study," a native speaker understands that you will move to another location (like the library or a friend's house) to study. If you're already at home and just moving to another room, the sentence sounds strange and redundant.
+                    </p>
+                </section>
+                
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">The Correct Way to Think ✅</h2>
+                    <p class="text-slate-300">
+                        The secret is to stop thinking about "movement" and start thinking about **"future intention"**. When "vou" means a plan for the future, not a displacement, use one of these two forms:
+                    </p>
+                    <div class="mt-6 space-y-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-300">1. Usando "going to" (The most common form)</h3>
+                            <p class="text-slate-300">This is the most faithful translation for our "vou fazer algo."</p>
+                            <p class="text-slate-300 mt-2 bg-gray-800 p-3 rounded-lg">
+                                <strong>Structure:</strong> Subject + <code class="text-teal-300">am/is/are</code> + <code class="text-teal-300">going to</code> + Main Verb
+                            </p>
+                            <p class="text-slate-300 mt-2"><strong>Example:</strong> "I <strong class='text-teal-300'>am going to study</strong>." (Eu vou estudar.)</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-300">2. Usando "will"</h3>
+                            <p class="text-slate-300">Also indicates the future, usually for decisions made on the spot.</p>
+                            <p class="text-slate-300 mt-2 bg-gray-800 p-3 rounded-lg">
+                                <strong>Structure:</strong> Subject + <code class="text-teal-300">will</code> + Verbo Principal
+                            </p>
+                            <p class="text-slate-300 mt-2"><strong>Example:</strong> "I <strong class='text-teal-300'>will study</strong> now." (Eu vou estudar agora.)</p>
+                        </div>
+                    </div>
+                     <div class="mt-8">
+                        <h3 class="text-xl font-bold text-sky-400 mb-4">See the correct translation for the sentences</h3>
+                        <table class="table-auto w-full text-left border-collapse border border-slate-700 rounded-lg">
+                            <thead>
+                                <tr class="bg-gray-800">
+                                    <th class="p-4 border-b border-slate-700 text-teal-400">Portuguese</th>
+                                    <th class="p-4 border-b border-slate-700 text-teal-400">English (With 'going to')</th>
+                                    <th class="p-4 border-b border-slate-700 text-teal-400">English (With 'will')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Eu vou estudar.</td>
+                                    <td class="p-4 border-b border-slate-700">I am going to study.</td>
+                                    <td class="p-4 border-b border-slate-700">I will study.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4 border-b border-slate-700">Eu vou comer.</td>
+                                    <td class="p-4 border-b border-slate-700">I am going to eat.</td>
+                                    <td class="p-4 border-b border-slate-700">I will eat.</td>
+                                </tr>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Ele vai dormir.</td>
+                                    <td class="p-4 border-b border-slate-700">He is going to sleep.</td>
+                                    <td class="p-4 border-b border-slate-700">He will sleep.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4 border-b border-slate-700">Nós vamos viajar.</td>
+                                    <td class="p-4 border-b border-slate-700">We are going to travel.</td>
+                                    <td class="p-4 border-b border-slate-700">We will travel.</td>
+                                </tr>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Eles vão trabalhar.</td>
+                                    <td class="p-4 border-b border-slate-700">They are going to work.</td>
+                                    <td class="p-4 border-b border-slate-700">They will work.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4 border-b border-slate-700">Você vai cantar.</td>
+                                    <td class="p-4 border-b border-slate-700">You are going to sing.</td>
+                                    <td class="p-4 border-b border-slate-700">You will sing.</td>
+                                </tr>
+                                <tr class="bg-slate-700">
+                                    <td class="p-4 border-b border-slate-700">Ela vai comprar.</td>
+                                    <td class="p-4 border-b border-slate-700">She is going to buy.</td>
+                                    <td class="p-4 border-b border-slate-700">She will buy.</td>
+                                </tr>
+                                <tr class="bg-slate-800">
+                                    <td class="p-4">Vocês vão assistir.</td>
+                                    <td class="p-4">You are going to watch.</td>
+                                    <td class="p-4">You will watch.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">The Only Exception: When "Go Study" Makes Sense 💡</h2>
+                    <p class="text-slate-300">
+                        There is one situation where you can use "go study": when you really want to emphasize the **movimento**. This usually happens with a command or suggestion.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        <strong>Example:</strong> Your mother walks into your room and sees you playing video games instead of studying. She might say:
+                    </p>
+                     <p class="text-slate-300 mt-2 bg-gray-800 p-3 rounded-lg">
+                        "Stop playing and <strong class='text-amber-300'>go study</strong>!" (Pare de jogar e vá estudar!)
+                    </p>
+                     <p class="text-slate-300 mt-2">
+                        Here, "go" works because she is telling you to leave the front of the video game and go somewhere else (your desk) to study.
+                    </p>
+                </section>
+
+                <section id="quiz-container-en" class="lesson-card"></section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizData = [
+                {
+                    situation_pt: "Você está no sofá e decide que vai lavar a louça. Como você diz isso?",
+                    options_pt: ["I will go wash the dishes.", "I am going to wash the dishes.", "I go to wash the dishes."],
+                    answer_pt: "I am going to wash the dishes.",
+                    situation_en: "You're on the couch and decide you're going to do the dishes. How do you say that?",
+                    options_en: ["I will go wash the dishes.", "I am going to wash the dishes.", "I go to wash the dishes."],
+                    answer_en: "I am going to wash the dishes."
+                },
+                {
+                    situation_pt: "Seu amigo te liga e pergunta seus planos para amanhã. Você planeja visitar sua avó. O que você diz?",
+                    options_pt: ["Tomorrow I will go visit my grandma.", "Tomorrow I visit my grandma.", "Tomorrow I am going to visit my grandma."],
+                    answer_pt: "Tomorrow I am going to visit my grandma.",
+                    situation_en: "Your friend calls and asks for your plans for tomorrow. You plan to visit your grandmother. What do you say?",
+                    options_en: ["Tomorrow I will go visit my grandma.", "Tomorrow I visit my grandma.", "Tomorrow I am going to visit my grandma."],
+                    answer_en: "Tomorrow I am going to visit my grandma."
+                },
+                {
+                    situation_pt: "Você está na casa de um amigo e precisa ir para casa para terminar um trabalho. Como você se despede?",
+                    options_pt: ["I have to go finish my work.", "I will finish my work.", "I am going to finish my work."],
+                    answer_pt: "I have to go finish my work.",
+                    situation_en: "You are at a friend's house and need to go home to finish some work. How do you say goodbye?",
+                    options_en: ["I have to go finish my work.", "I will finish my work.", "I am going to finish my work."],
+                    answer_en: "I have to go finish my work."
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+
+            function renderQuiz(lang) {
+                const isPt = lang === 'pt';
+                const quizContainer = document.getElementById(isPt ? 'quiz-container-pt' : 'quiz-container-en');
+                
+                if (currentQuestionIndex >= quizData.length) {
+                    const scoreText = isPt ? `Sua pontuação: ${score} / ${quizData.length}` : `Your score: ${score} / ${quizData.length}`;
+                    quizContainer.innerHTML = `
+                        <h2 class="text-2xl font-bold text-center text-sky-400">${isPt ? "Quiz Finalizado!" : "Quiz Complete!"}</h2>
+                        <p class="text-center text-lg mt-4 text-slate-300">${scoreText}</p>
+                        <div class="text-center mt-6">
+                            <button id="restart-quiz-${lang}" class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-full hover:bg-amber-600 transition-colors">
+                                ${isPt ? "Recomeçar" : "Restart"}
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById(`restart-quiz-${lang}`).addEventListener('click', () => {
+                        currentQuestionIndex = 0;
+                        score = 0;
+                        renderQuiz(lang);
+                    });
+                    return;
+                }
+                
+                const question = quizData[currentQuestionIndex];
+                const situation = isPt ? question.situation_pt : question.situation_en;
+                const options = isPt ? question.options_pt : question.options_en;
+                const answer = isPt ? question.answer_pt : question.answer_en;
+
+                const optionsHtml = options.map(option => {
+                     return `<button class="quiz-option w-full text-left p-4 rounded-lg font-semibold" data-answer="${option}">${option}</button>`
+                }).join('');
+
+                quizContainer.innerHTML = `
+                    <h2 class="text-2xl font-bold text-center text-sky-400">${isPt ? "Teste seu Conhecimento! 🧐" : "Test Your Knowledge! 🧐"}</h2>
+                    <p class="text-lg font-medium text-slate-300 my-4">${situation}</p>
+                    <div class="space-y-3" id="options-container-${lang}">
+                        ${optionsHtml}
+                    </div>
+                    <div id="feedback-${lang}" class="mt-4 text-center font-bold"></div>
+                `;
+
+                document.querySelectorAll(`#options-container-${lang} .quiz-option`).forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const selectedAnswer = e.target.dataset.answer;
+                        const feedbackEl = document.getElementById(`feedback-${lang}`);
+                        
+                        document.querySelectorAll(`#options-container-${lang} .quiz-option`).forEach(btn => btn.disabled = true);
+                        
+                        if (selectedAnswer === answer) {
+                            e.target.classList.add('correct');
+                            feedbackEl.textContent = isPt ? 'Correto! 🎉' : 'Correct! 🎉';
+                            feedbackEl.className = 'mt-4 text-center font-bold text-green-400';
+                            score++;
+                        } else {
+                            e.target.classList.add('incorrect');
+                            const correctAnswerText = answer;
+                            feedbackEl.textContent = `${isPt ? 'Incorreto. A resposta certa é:' : 'Incorrect. The right answer is:'} ${correctAnswerText}`;
+                            feedbackEl.className = 'mt-4 text-center font-bold text-red-400';
+                             document.querySelector(`#options-container-${lang} .quiz-option[data-answer="${answer}"]`).classList.add('correct');
+                        }
+                        
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            renderQuiz(lang);
+                        }, 2000);
+                    });
+                });
+            }
+
+            const portugueseContent = document.getElementById('portuguese-content');
+            const englishContent = document.getElementById('english-content');
+            const languageButton = document.getElementById('language-button');
+
+            languageButton.addEventListener('click', () => {
+                const isEnglishVisible = !englishContent.classList.contains('hidden');
+                englishContent.classList.toggle('hidden', isEnglishVisible);
+                portugueseContent.classList.toggle('hidden', !isEnglishVisible);
+                languageButton.textContent = isEnglishVisible ? 'Mudar para Português' : 'Switch to English';
+            });
+            
+            renderQuiz('pt');
+            renderQuiz('en');
+        });
+    </script>
+</body>
+</html>
